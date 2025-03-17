@@ -1,28 +1,51 @@
-import Breadcrumb from "@/components/Common/Breadcrumb";
-import Link from "next/link";
+'use client';
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from '@/firebase';
+import { auth } from '@/lib/firebaseConfig';
+import { useRouter } from 'next/navigation';
+import { sendEmailVerification, signOut } from 'firebase/auth';
 
 const Signup = () => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [displayName, setDisplayName] = useState('');
+    const [name, setName] = useState('');
+    const [error, setError] = useState('');
+    const router = useRouter();
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(userCredential.user, { displayName });
-            console.log("User registered successfully");
-        } catch (error) {
-            console.error("Error registering user:", error);
+    const handleSignUp = async (event) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            alert('Please use a valid email address.');
+            return;
+        }
+        if (password.length < 6) {
+            alert('Password must be at least 6 characters long.');
+            return;
+        }
+        else {
+            event.preventDefault();
+            try {
+                const res = await createUserWithEmailAndPassword(auth, email, password);
+                if (!res || !res.user) {
+                    alert('User Account already exists, Please login');
+                    console.log('Failed to retrieve user data from sign-up response');
+                }
+                const user = res.user;
+
+                await sendEmailVerification(user);
+                alert('A verification email has been sent to your email address. Please verify your email.');
+
+                router.push('/signin');
+
+            } catch (error) {
+                console.error("Errorr Is: ", error);
+            }
         }
     };
 
     return (
         <>
-            <Breadcrumb title={"Signup"} pages={["Signup"]} />
             <section className="overflow-hidden py-20 bg-gray-2">
                 <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
                     <div className="max-w-[570px] w-full mx-auto rounded-xl bg-white shadow-1 p-4 sm:p-7.5 xl:p-11">
@@ -85,7 +108,7 @@ const Signup = () => {
                             <span className="inline-block px-3 bg-white">Or</span>
                         </span>
                         <div className="mt-5.5">
-                            <form onSubmit={handleRegister}>
+                            <form onSubmit={handleSignUp}>
                                 <div className="mb-5">
                                     <label htmlFor="name" className="block mb-2.5">
                                         Full Name <span className="text-red">*</span>
@@ -96,6 +119,8 @@ const Signup = () => {
                                         id="name"
                                         placeholder="Enter your full name"
                                         className="rounded-lg border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                     />
                                 </div>
                                 <div className="mb-5">
@@ -108,6 +133,8 @@ const Signup = () => {
                                         id="email"
                                         placeholder="Enter your email address"
                                         className="rounded-lg border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
                                 <div className="mb-5">
@@ -121,6 +148,8 @@ const Signup = () => {
                                         placeholder="Enter your password"
                                         autoComplete="on"
                                         className="rounded-lg border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                                 <div className="mb-5.5">
@@ -136,6 +165,7 @@ const Signup = () => {
                                         className="rounded-lg border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                                     />
                                 </div>
+                                {error && <p className="text-red-500 mb-4">{error}</p>}
                                 <button
                                     type="submit"
                                     className="w-full flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"

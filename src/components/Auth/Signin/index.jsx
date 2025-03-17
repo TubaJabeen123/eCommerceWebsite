@@ -1,9 +1,61 @@
 "use client";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { signInWithPopup } from 'firebase/auth';
+import { provider } from "@/lib/firebaseConfig";
+import { useRouter } from 'next/navigation';
+import { auth } from "@/lib/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
+
 
 const Signin = () => {
+
+
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  useEffect(() => {
+    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+    if (token) {
+      router.push('/dashboard');
+    } else {
+      // setLoading(false);
+    }
+  }, [router]);
+  const signInWithEmailPassword = async (email, password) => {
+    alert("Sign in with email and password Email :" + email + " And Password : " + password);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      router.push('/Profile');
+      console.log("User signed in:", userCredential.user);
+    } catch (error) {
+      alert("Error signing in: " + error.message);
+      console.error("Error signing in:", error.message);
+    }
+  };
+  const signUpGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Successfully signed in with Google:", user);
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
+
+  const singUpGithub = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Successfully signed in with Github:", user);
+      // Add your post-sign in logic here
+    } catch (error) {
+      console.error("Error signing in with Github:", error);
+    }
+  };
+
   return (
     <>
       <Breadcrumb title={"Signin"} pages={["Signin"]} />
@@ -25,6 +77,7 @@ const Signin = () => {
                   </label>
 
                   <input
+                    onChange={(e) => setEmail(e.target.value)}
                     type="email"
                     name="email"
                     id="email"
@@ -39,6 +92,7 @@ const Signin = () => {
                   </label>
 
                   <input
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     name="password"
                     id="password"
@@ -48,12 +102,12 @@ const Signin = () => {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"
+                <div
+                  onClick={() => signInWithEmailPassword(email, password)}
+                  className="w-full cursor-pointer flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"
                 >
                   Sign in to account
-                </button>
+                </div>
 
                 <a
                   href="#"
@@ -68,7 +122,7 @@ const Signin = () => {
                 </span>
 
                 <div className="flex flex-col gap-4.5 mt-4.5">
-                  <button className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <div onClick={signUpGoogle} className="flex cursor-pointer justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                     <svg
                       width="20"
                       height="20"
@@ -113,9 +167,9 @@ const Signin = () => {
                       </defs>
                     </svg>
                     Sign In with Google
-                  </button>
+                  </div>
 
-                  <button className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <div onClick={singUpGithub} className="flex cursor-pointer justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                     <svg
                       width="22"
                       height="22"
@@ -129,7 +183,7 @@ const Signin = () => {
                       />
                     </svg>
                     Sign Up with Github
-                  </button>
+                  </div>
                 </div>
 
                 <p className="text-center mt-6">
