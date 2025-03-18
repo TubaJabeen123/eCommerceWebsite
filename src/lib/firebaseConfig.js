@@ -1,13 +1,13 @@
 // lib/firebase.js
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage';
 
 
+console.log("API Key:", process.env);
 console.log("API Key:", process.env.REACT_APP_FIREBASE_API_KEY);
-console.log("Auth Domain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
 
 const firebaseConfig = {
     apiKey: "AIzaSyBO8B4ZdhPFTAf-w7NpwGM6mZcy21tFzW0",
@@ -25,3 +25,6 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const provider = new GoogleAuthProvider();
+export const githubProvider = new GithubAuthProvider();
+
+

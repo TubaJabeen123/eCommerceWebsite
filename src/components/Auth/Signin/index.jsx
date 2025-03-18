@@ -1,29 +1,20 @@
 "use client";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { signInWithPopup } from 'firebase/auth';
 import { provider } from "@/lib/firebaseConfig";
 import { useRouter } from 'next/navigation';
 import { auth } from "@/lib/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-
-
+import { githubProvider } from "@/lib/firebaseConfig";
 
 const Signin = () => {
-
 
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  useEffect(() => {
-    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
-    if (token) {
-      router.push('/dashboard');
-    } else {
-      // setLoading(false);
-    }
-  }, [router]);
+
   const signInWithEmailPassword = async (email, password) => {
     alert("Sign in with email and password Email :" + email + " And Password : " + password);
     try {
@@ -47,10 +38,10 @@ const Signin = () => {
 
   const singUpGithub = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, githubProvider);
       const user = result.user;
       console.log("Successfully signed in with Github:", user);
-      // Add your post-sign in logic here
+      router.push('/Profile');
     } catch (error) {
       console.error("Error signing in with Github:", error);
     }
