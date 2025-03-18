@@ -23,10 +23,8 @@ const Checkout = () => {
 
                 {/* <!-- billing details --> */}
                 <Billing />
-
                 {/* <!-- address box two --> */}
-                <Shipping />
-
+                <Shipping /> 
                 {/* <!-- others note box --> */}
                 <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5 mt-7.5">
                   <div>
@@ -80,6 +78,7 @@ const Checkout = () => {
 
                     {/* <!-- product item --> */}
                     <div className="flex items-center justify-between py-5 border-b border-gray-3">
+
                       <div>
                         <p className="text-dark">Asus RT Dual Band Router</p>
                       </div>
@@ -97,6 +96,7 @@ const Checkout = () => {
                         <p className="text-dark text-right">$29.00</p>
                       </div>
                     </div>
+
 
                     {/* <!-- product item --> */}
                     <div className="flex items-center justify-between py-5 border-b border-gray-3">
@@ -116,6 +116,7 @@ const Checkout = () => {
                       <div>
                         <p className="font-medium text-lg text-dark text-right">
                           $1072.00
+
                         </p>
                       </div>
                     </div>
@@ -127,6 +128,7 @@ const Checkout = () => {
 
                 {/* <!-- shipping box --> */}
                 <ShippingMethod />
+
 
                 {/* <!-- payment box --> */}
                 <PaymentMethod />

@@ -10,12 +10,12 @@ console.log("API Key:", process.env);
 console.log("API Key:", process.env.REACT_APP_FIREBASE_API_KEY);
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBO8B4ZdhPFTAf-w7NpwGM6mZcy21tFzW0",
-    authDomain: "startup-project-31826.firebaseapp.com",
-    projectId: "startup-project-31826",
-    storageBucket: "startup-project-31826.firebasestorage.app",
-    messagingSenderId: "983554497344",
-    appId: "1:983554497344:web:5c6ee672a421cd5c2878a5",
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 

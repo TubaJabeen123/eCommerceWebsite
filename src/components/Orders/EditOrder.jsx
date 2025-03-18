@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-const EditOrder = ({ order, toggleModal }: any) => {
+
+const EditOrder = ({ order, toggleModal }) => {
   const [currentStatus, setCurrentStatus] = useState(order?.status);
-  const handleChanege = (e: any) => {
+  const handleChange = (e) => {
     setCurrentStatus(e.target.value);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!currentStatus) {
@@ -26,8 +27,8 @@ const EditOrder = ({ order, toggleModal }: any) => {
           className="w-full rounded-[10px] border border-gray-3 bg-gray-1 text-dark py-3.5 px-5 text-custom-sm"
           name="status"
           id="status"
-          required
-          onChange={handleChanege}
+          required 
+          onChange={handleChange}
         >
           <option value="processing">Processing</option>
           <option value="on-hold">On Hold</option>

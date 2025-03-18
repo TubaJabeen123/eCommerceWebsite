@@ -3,9 +3,10 @@ import React from "react";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
-import { addItemToWishlist } from "@/redux/features/wishlist-slice";
+
+// import { addItemToWishlist } from "@/redux/features/wishlist-slice";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+// import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -29,15 +30,15 @@ const SingleGridItem = ({ item }) => {
     );
   };
 
-  const handleItemToWishList = () => {
-    dispatch(
-      addItemToWishlist({
-        ...item,
-        status: "available",
-        quantity: 1,
-      })
-    );
-  };
+  // const handleItemToWishList = () => {
+  //   dispatch(
+  //     addItemToWishlist({
+  //       ...item,
+  //       status: "available",
+  //       quantity: 1,
+  //     })
+  //   );
+  // };
 
   return (
     <div className="group">
@@ -83,8 +84,7 @@ const SingleGridItem = ({ item }) => {
           >
             Add to cart
           </button>
-
-          <button
+          {/* <button
             onClick={() => handleItemToWishList()}
             aria-label="button for favorite select"
             id="favOne"
@@ -105,7 +105,7 @@ const SingleGridItem = ({ item }) => {
                 fill=""
               />
             </svg>
-          </button>
+          </button> */}
         </div>
       </div>
 

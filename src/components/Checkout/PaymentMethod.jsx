@@ -119,7 +119,7 @@ const PaymentMethod = () => {
               }`}
             >
               <div className="flex items-center">
-                <div className="pr-2.5">
+                 <div className="pr-2.5">
                   <Image src="/images/checkout/paypal.svg" alt="paypal" width={75} height={20}/>
                 </div>
 
@@ -127,7 +127,7 @@ const PaymentMethod = () => {
                   <p>Paypal</p>
                 </div>
               </div>
-            </div>
+             </div>
           </label>
         </div>
       </div>

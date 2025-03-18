@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { AppDispatch, useAppSelector } from "@/redux/store";
+
+import {  useAppSelector } from "@/redux/store";
 import { addItemToCart } from "@/redux/features/cart-slice";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
@@ -136,6 +137,14 @@ const QuickViewModal = () => {
                         />
                       </svg>
                     </button>
+
+
+                    <Image
+                      src={product?.imgs?.previews?.[activePreview]}
+                      alt="products-details"
+                      width={400}
+                      height={400}
+                    />
                   </div>
                 </div>
               </div>
@@ -393,7 +402,8 @@ const QuickViewModal = () => {
                   Add to Cart
                 </button>
 
-                <button
+ 
+                {/* <button
                   className={`inline-flex items-center gap-2 font-medium text-white bg-dark py-3 px-6 rounded-md ease-out duration-200 hover:bg-opacity-95 `}
                 >
                   <svg
@@ -412,7 +422,8 @@ const QuickViewModal = () => {
                     />
                   </svg>
                   Add to Wishlist
-                </button>
+ 
+                </button> */}
               </div>
             </div>
           </div>

@@ -16,12 +16,14 @@ const Breadcrumb = ({ title, pages }) => {
                 <Link href="/">Home /</Link>
               </li>
 
-              {pages.length > 0 &&
+
+              {/* {true &&
                 pages.map((page, key) => (
+                  
                   <li className="text-custom-sm last:text-blue capitalize" key={key}>
                     {page} 
                   </li>
-                ))}
+                ))} */}
             </ul>
           </div>
         </div>

@@ -84,6 +84,7 @@ const Signin = () => {
 
                   <input
                     onChange={(e) => setPassword(e.target.value)}
+
                     type="password"
                     name="password"
                     id="password"
@@ -93,9 +94,8 @@ const Signin = () => {
                   />
                 </div>
 
-                <div
-                  onClick={() => signInWithEmailPassword(email, password)}
-                  className="w-full cursor-pointer flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"
+
+                <div onClick={() => signInWithEmailPassword(email, password)} className="w-full flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"
                 >
                   Sign in to account
                 </div>
@@ -113,7 +113,8 @@ const Signin = () => {
                 </span>
 
                 <div className="flex flex-col gap-4.5 mt-4.5">
-                  <div onClick={signUpGoogle} className="flex cursor-pointer justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+
+                  <div onClick={()=>signUpGoogle()} className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                     <svg
                       width="20"
                       height="20"
@@ -158,9 +159,10 @@ const Signin = () => {
                       </defs>
                     </svg>
                     Sign In with Google
+
                   </div>
 
-                  <div onClick={singUpGithub} className="flex cursor-pointer justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <div onClick={()=>singUpGithub()} className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                     <svg
                       width="22"
                       height="22"
