@@ -1,24 +1,24 @@
 # Project Overview
-[![Project Status](https://img.shields.io/badge/status-in%20progress-green.svg)](https://shields.io/)
-[![Last Update](https://img.shields.io/badge/last%20update-march%202025-orange.svg)](https://shields.io/)
+[![Project Status](https://img.shields.io/badge/status-in%20progress-green.svg)](https://shields.io/) 
+[![Last Update](https://img.shields.io/badge/last%20update-april%202025-orange.svg)](https://shields.io/)
 
-## Project Progress Timeline
-📅 
- - Initial Setup Phase
-📅 
- - UI Development Phase
-📅 
- - Technology Migration
-📅 
- - UI Enhancement Phase
-📅 
- - Authentication Integration
+## Project Progress Timeline 📅
+- Initial Setup Phase 📅
+- UI Development Phase 📅
+- Technology Migration 📅
+- UI Enhancement Phase 📅
+- Authentication Integration 📅
+- User Profile Implementation 📅
+- Admin Dashboard Development 📅
 
-## Key Features Implemented
+## Key Features Implemented ✨
 ✨ Website UI Setup
 ✨ TypeScript to JavaScript Migration
 ✨ Customized User Interface
 ✨ Firebase Google Authentication
+✨ User Profile Management System
+✨ Admin Dashboard Interface
+✨ Role-Based Access Control
 
 ## Detailed Commit History
 1. **Initial Project Setup**
@@ -51,15 +51,34 @@
    - Secured user sessions
    - Under developing
 
-## Current Status
-🟢 Active Development 
+6. **User Profile System**
+   - Implemented profile creation and management
+   - Added profile editing functionality
+   - Integrated Firebase Authentication profiles
+   - Implemented profile picture upload
+   - Completed
+
+7. **Admin Dashboard**
+   - Designed responsive admin interface
+   - Implemented user management features
+   - Added role-based access controls
+   - Integrated analytics dashboard
+   - Under development
+
+## Current Status 🟢 Active Development
 
 ## Next Steps
 - Implement additional authentication providers
-- Making some Other Pages like User Profiles 
-- Add core application features 
+- Add core application features
+- Enhance admin dashboard analytics
+- Implement user activity monitoring
+- Add audit logging system
 
-## Technical Details
-🔧 JavaScript
-⚡ Firebase
-🌐 Responsive Design
+## Technical Details 🔧
+⚡ JavaScript
+🌐 Firebase
+🔧 Responsive Design
+🎨 Material UI Components
+📍 React Router
+🔒 Firebase Authentication
+🗄️ Firestore Database

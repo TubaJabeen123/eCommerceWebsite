@@ -1,15 +1,19 @@
 "use client";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signInWithPopup } from 'firebase/auth';
 import { provider } from "@/lib/firebaseConfig";
-import { useRouter } from 'next/navigation';
-import { auth } from "@/lib/firebaseConfig";
+import { useRouter } from 'next/navigation'; 
+import { auth, db, storage } from '../../../lib/firebaseConfig';
+import { signOut } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { githubProvider } from "@/lib/firebaseConfig";
 
 const Signin = () => {
+  
 
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -19,8 +23,15 @@ const Signin = () => {
     alert("Sign in with email and password Email :" + email + " And Password : " + password);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      router.push('/Profile');
-      console.log("User signed in:", userCredential.user);
+      if (!userCredential.user.emailVerified) {
+        alert("Please verify your email before signing in");
+        // Set cookie here for email/password auth
+        return;
+      }
+       
+      console.log("User signed in:", userCredential?.user);
+      router.push('/my-account');
+      console.log("User signed in:", userCredential?.user);
     } catch (error) {
       alert("Error signing in: " + error.message);
       console.error("Error signing in:", error.message);
@@ -31,6 +42,12 @@ const Signin = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log("Successfully signed in with Google:", user);
+      document.cookie = `user=${user}; path=/; max-age=3600`;
+      document.cookie = `name=${user?.displayName}; path=/; max-age=3600`;
+      document.cookie = `email=${user?.email}; path=/; max-age=3600`;
+      document.cookie = `userUid=${user?.uid}; path=/; max-age=3600`;
+
+      router.push('/my-account');
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
@@ -41,7 +58,8 @@ const Signin = () => {
       const result = await signInWithPopup(auth, githubProvider);
       const user = result.user;
       console.log("Successfully signed in with Github:", user);
-      router.push('/Profile');
+      document.cookie = `user=${user}; path=/; max-age=3600`;
+      router.push('/my-account');
     } catch (error) {
       console.error("Error signing in with Github:", error);
     }
@@ -114,7 +132,7 @@ const Signin = () => {
 
                 <div className="flex flex-col gap-4.5 mt-4.5">
 
-                  <div onClick={()=>signUpGoogle()} className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <div onClick={()=>signUpGoogle()} className="flex cursor-pointer justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                     <svg
                       width="20"
                       height="20"
@@ -162,7 +180,7 @@ const Signin = () => {
 
                   </div>
 
-                  <div onClick={()=>singUpGithub()} className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <div onClick={()=>singUpGithub()} className="flex cursor-pointer justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                     <svg
                       width="22"
                       height="22"
