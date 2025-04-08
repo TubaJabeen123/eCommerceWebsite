@@ -24,6 +24,7 @@ const Footer = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    style={{ filter: 'invert(20%) sepia(100%) saturate(500%) hue-rotate(180deg)' }}
                   >
                     <path
                       fillRule="evenodd"
@@ -44,6 +45,7 @@ const Footer = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    style={{ filter: 'invert(20%) sepia(100%) saturate(500%) hue-rotate(180deg)' }}
                   >
                     <path
                       fillRule="evenodd"
@@ -74,6 +76,7 @@ const Footer = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    style={{ filter: 'invert(20%) sepia(100%) saturate(500%) hue-rotate(180deg)' }}
                   >
                     <path
                       fillRule="evenodd"

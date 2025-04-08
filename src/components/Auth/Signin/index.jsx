@@ -113,7 +113,7 @@ const Signin = () => {
                 </div>
 
 
-                <div onClick={() => signInWithEmailPassword(email, password)} className="w-full flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"
+                <div onClick={() => signInWithEmailPassword(email, password)} className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue-dark mt-7.5"
                 >
                   Sign in to account
                 </div>

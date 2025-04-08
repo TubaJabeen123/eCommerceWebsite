@@ -3,8 +3,8 @@ import Home from "@/components/Home";
 // import { Metadata } from "next";
 
 export const metadata = {
-    title: "Bytes & Boards Solutions",
-    description: "This is Home for E-Commerse website",
+    title: "Byte & Board Solutions",
+    description: "Website for e-commerce",
     // other metadata
 };
 

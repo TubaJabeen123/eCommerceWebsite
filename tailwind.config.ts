@@ -33,13 +33,27 @@ const config: Config = {
         4: "#8D93A5",
         5: "#BBBEC9",
       },
-      dark: {
-        DEFAULT: "#1C274C",
-        2: "#495270",
-        3: "#606882",
-        4: "#8D93A5",
-        5: "#BBBEC9",
-      },
+  //  dark: {
+//   DEFAULT: "#0F2A41",        // Deep dark shade to complement the blue
+//   2: "#2A3F58",              // Darker shade for contrast
+//   3: "#4B5C73",              // Medium dark
+//   4: "#6E7C8C",              // Light dark
+//   5: "#A0AEB8",              // Lighter dark
+// },
+// dark: {
+//   DEFAULT: "#0C3C5F",        // Much darker shade of #1EA5D8
+//   2: "#092B47",              // Even darker
+//   3: "#061C33",              // Darker still
+//   4: "#041728",              // Very deep dark
+//   5: "#020D1D",              // Deepest shade
+// },
+dark: {
+  DEFAULT: "#1C274C",
+  2: "#495270",
+  3: "#606882",
+  4: "#8D93A5",
+  5: "#BBBEC9",
+},
       gray: {
         DEFAULT: "#F3F5F6",
         1: "#F9FAFB",
@@ -51,14 +65,15 @@ const config: Config = {
         7: "#374151",
       },
       blue: {
-        DEFAULT: "#3C50E0",
-        dark: "#1C3FB7",
-        light: "#5475E5",
-        "light-2": "#8099EC",
-        "light-3": "#ADBCF2",
-        "light-4": "#C3CEF6",
-        "light-5": "#E1E8FF",
+        DEFAULT: "#1EA5D8",       // Main theme color
+        dark: "#1787B3",          // Slightly darker shade
+        light: "#3EB6DF",         // Slightly lighter shade
+        "light-2": "#69C8E6",     // More light
+        "light-3": "#93DAED",     // Even lighter
+        "light-4": "#BDEBF4",     // Near pastel
+        "light-5": "#E6F8FC",     // Very light, good for background
       },
+
       red: {
         DEFAULT: "#F23030",
         dark: "#E10E0E",
@@ -241,7 +256,7 @@ const config: Config = {
           "0px 0px 1px 0px rgba(33, 37, 41, 0.08), 0px 2px 2px 0px rgba(33, 37, 41, 0.06)",
         filter: "0px 1px 0px 0px #E5E7EB",
         list: "1px 0px 0px 0px #E5E7EB",
-        input: "inset 0 0 0 2px #3C50E0",
+        input: "inset 0 0 0 2px #1EA5D8",
       },
     },
   },

@@ -193,7 +193,7 @@ const Signup = () => {
                 </div>
 
                 <div onClick={handleSignUp}
-                  className="w-full flex cursor-pointer justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue mt-7.5"
+                  className="w-full flex cursor-pointer justify-center font-medium text-white bg-blue py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue-dark mt-7.5"
                 >
                   Create Account
                 </div>

@@ -36,6 +36,7 @@ const Testimonials = () => {
                     alt="icon"
                     width={17}
                     height={17}
+                    style={{ filter: 'invert(20%) sepia(100%) saturate(500%) hue-rotate(180deg)' }}
                   />
                   Testimonials
                 </span>

@@ -234,21 +234,21 @@ const BlogDetailsWithSidebar = () => {
                 <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-1">
                   <a
                     href="#"
-                    className="block bg-dark py-4 px-5 rounded-lg text-white text-center hover:bg-opacity-90 ease-out duration-200"
+                    className="block bg-blue py-4 px-5 rounded-lg text-white text-center hover:bg-opacity-90 ease-out duration-200"
                   >
                     Tech
                   </a>
 
                   <a
                     href="#"
-                    className="block bg-dark py-4 px-5 rounded-lg text-white text-center hover:bg-opacity-90 ease-out duration-200"
+                    className="block bg-blue py-4 px-5 rounded-lg text-white text-center hover:bg-opacity-90 ease-out duration-200"
                   >
                     Fashion
                   </a>
 
                   <a
                     href="#"
-                    className="block bg-dark py-4 px-5 rounded-lg text-white text-center hover:bg-opacity-90 ease-out duration-200"
+                    className="block bg-blue py-4 px-5 rounded-lg text-white text-center hover:bg-opacity-90 ease-out duration-200"
                   >
                     Health
                   </a>

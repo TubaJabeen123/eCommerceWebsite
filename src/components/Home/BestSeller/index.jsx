@@ -17,6 +17,7 @@ const BestSeller = () => {
                 alt="icon"
                 width={17}
                 height={17}
+                style={{ filter: 'invert(20%) sepia(100%) saturate(500%) hue-rotate(180deg)' }}
               />
               This Month
             </span>
@@ -36,7 +37,7 @@ const BestSeller = () => {
         <div className="text-center mt-12.5">
           <Link
             href="/shop-without-sidebar"
-            className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border-gray-3 border bg-gray-1 text-dark ease-out duration-200 hover:bg-dark hover:text-white hover:border-transparent"
+            className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border-gray-3 border bg-gray-1 text-dark ease-out duration-200 hover:bg-blue-dark hover:text-white hover:border-transparent"
           >
             View All
           </Link>
