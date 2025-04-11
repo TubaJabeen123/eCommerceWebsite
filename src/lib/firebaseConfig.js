@@ -4,8 +4,7 @@ import { getAuth, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-// Optional: Debug environment variables (can remove in production)
-console.log("Firebase API Key:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
