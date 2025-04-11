@@ -6,14 +6,14 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/order`)
-      .then((res) => res.json())
-      .then((data) => {
-        setOrders(data.orders);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    // fetch(`/api/order`)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setOrders(data.orders);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }, []);
 
   return (

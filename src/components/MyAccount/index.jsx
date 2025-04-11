@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import Cookies from 'js-cookie';
 
@@ -20,8 +20,21 @@ const MyAccount = () => {
   const [passwordResetEmail, setPasswordResetEmail] = useState('')
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [user, setUser] = useState(null);
   const [userDetails, setUserDetails] = useState({ id: '', name: '', email: '' });
   const router = useRouter();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const userId = Cookies.get('uid');
@@ -90,7 +103,7 @@ const MyAccount = () => {
   const handleProfileImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
- 
+
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/webp', 'image/svg+xml', 'image/svg'];
     const maxSize = 5 * 1024 * 1024;
 
@@ -104,7 +117,7 @@ const MyAccount = () => {
       return;
     }
 
-    try { 
+    try {
       const reader = new FileReader();
 
       reader.onloadend = async () => {
@@ -116,23 +129,23 @@ const MyAccount = () => {
           alert('Please sign in first');
           return;
         }
- 
+
         const userDocRef = doc(db, 'users', currentUser.uid);
 
         try {
           const docSnap = await getDoc(userDocRef);
 
-          if (!docSnap.exists()) { 
+          if (!docSnap.exists()) {
             await setDoc(userDocRef, {
               profileImage: base64Image,
               uid: currentUser.uid
             });
-          } else { 
+          } else {
             await updateDoc(userDocRef, {
               profileImage: base64Image
             });
           }
- 
+
           setUserData(prev => ({
             ...prev,
             profileImage: base64Image
@@ -177,11 +190,11 @@ const MyAccount = () => {
                   <div
                     className="relative max-w-[64px] cursor-pointer w-full h-16 rounded-full overflow-hidden"
                     onClick={() => document.getElementById('profileImageInput').click()}
-                    >
+                  >
                     {userData?.profileImage ? (
                       <Image
                         src={userData.profileImage}
-                        alt="user profile" 
+                        alt="user profile"
                         width={64}
                         height={64}
                         className="object-cover w-full h-full"
@@ -209,9 +222,9 @@ const MyAccount = () => {
                   <label htmlFor="profileImageInput" className="cursor-pointer"></label>
                   <div>
                     <p className="font-medium text-dark mb-0.5">
-                      {userDetails?.name || 'User Name'}
+                      {user?.displayName || 'User Name'}
                     </p>
-                    <p className="text-custom-xs">{userDetails?.email || "User Email"}</p>
+                    <p className="text-custom-xs">{user?.email || "User Email"}</p>
                   </div>
                 </div>
 
@@ -518,7 +531,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Name: {userDetails?.name}
+                      Name: {user?.displayName}
                     </p>
 
                     <p className="flex items-center gap-2.5 text-custom-sm">
@@ -537,7 +550,7 @@ const MyAccount = () => {
                           fill=""
                         />
                       </svg>
-                      Email: {userDetails?.email}
+                      Email: {user?.email}
                     </p>
 
                     <p className="flex items-center gap-2.5 text-custom-sm">
@@ -648,7 +661,7 @@ const MyAccount = () => {
       <AddressModal
         isOpen={addressModal}
         onAddressChange={(phone, address) => {
-          console.log("phone form child is : "+ phone)
+          console.log("phone form child is : " + phone)
           setUserData(prev => ({
             ...prev,
             phone: phone,
