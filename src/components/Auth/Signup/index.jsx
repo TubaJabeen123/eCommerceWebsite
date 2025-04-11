@@ -6,45 +6,91 @@ import { useRouter } from 'next/navigation';
 import { sendEmailVerification, signOut } from 'firebase/auth';
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link"; 
+import { signInWithPopup } from "firebase/auth";
+import {provider, githubProvider } from '@/lib/firebaseConfig';
+import { useEffect } from 'react';
 
 const Signup = () => {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  
   const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-    const [rePassword, setrePassword] = useState('');
-    const [error, setError] = useState('');
-    const router = useRouter();
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [rePassword, setrePassword] = useState('');
+  const [error, setError] = useState('');
+ 
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
 
-    const handleSignUp = async (event) => {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(email)) {
-            alert('Please use a valid email address.');
-            return;
-        }
-        if (password.length < 6) {
-            alert('Password must be at least 6 characters long.');
-            return;
-        }
-        else {
-            event.preventDefault();
-            try {
-                const res = await createUserWithEmailAndPassword(auth, email, password);
-                if (!res || !res.user) {
-                    alert('User Account already exists, Please login');
-                    console.log('Failed to retrieve user data from sign-up response');
-                }
-                const user = res.user;
-
-                await sendEmailVerification(user);
-                alert('A verification email has been sent to your email address. Please verify your email.');
-
-                router.push('/signin');
-
-            } catch (error) {
-                console.error("Errorr Is: ", error);
-            }
-        }
+    const handleGoogleSignUp = async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        alert(`Welcome ${user.displayName || user.email}`);
+        router.push('/my-account'); 
+      } catch (error) {
+        console.error('Google Sign-in error:', error);
+        alert('Google sign-in failed. Please try again.');
+      }
     };
+    
+    const handleGithubSignUp = async () => {
+      try {
+        const result = await signInWithPopup(auth, githubProvider);
+        const user = result.user;
+        alert(`Welcome ${user.displayName || user.email}`);
+        router.push('/my-account');
+      } catch (error) {
+        console.error('GitHub Sign-in error:', error);
+        alert('GitHub sign-in failed. Please try again.');
+      }
+    };
+    
+    
+  const handleSignUp = async (event) => {
+    event.preventDefault();
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setError('Please use a valid email address.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== rePassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      if (!res || !res.user) {
+        setError('User could not be created.');
+        return;
+      }
+
+      await updateProfile(res.user, { displayName: name });
+
+      await sendEmailVerification(res.user);
+      alert('A verification email has been sent. Please check your inbox.');
+
+      // Optional: Sign out immediately after registration
+      await signOut(auth);
+
+      router.push('/signin');
+    } catch (err) {
+      console.error("Error:", err.message);
+      setError(err.message);
+    }};
   return (
     <>
       <Breadcrumb title={"Signup"} pages={["Signup"]} />
@@ -59,7 +105,9 @@ const Signup = () => {
             </div>
 
             <div className="flex flex-col gap-4.5">
-              <button className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+              <button  
+              onClick={handleGoogleSignUp}
+              className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                 <svg
                   width="20"
                   height="20"
@@ -106,7 +154,9 @@ const Signup = () => {
                 Sign Up with Google
               </button>
 
-              <button className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+              <button
+               onClick={handleGithubSignUp}
+               className="flex justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
                 <svg
                   width="22"
                   height="22"
@@ -129,7 +179,7 @@ const Signup = () => {
             </span>
 
             <div className="mt-5.5">
-              <form>
+              <form onSubmit={handleSignUp}>
                 <div className="mb-5">
                   <label htmlFor="name" className="block mb-2.5">
                     Full Name <span className="text-red">*</span>
@@ -192,11 +242,12 @@ const Signup = () => {
                   />
                 </div>
 
-                <div onClick={handleSignUp}
-                  className="w-full flex cursor-pointer justify-center font-medium text-white bg-blue py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue-dark mt-7.5"
+                <button 
+                type='submit'
+                  className="w-full flex cursor-pointer justify-center font-medium text-white bg-blue py-3 px-6 rounded-lg ease-out duration-200 hover:bg-blue-dark mt-7.5"                
                 >
                   Create Account
-                </div>
+                </button>
 
                 <p className="text-center mt-6">
                   Already have an account?

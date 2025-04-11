@@ -71,8 +71,17 @@ const Header = () => {
             height={36}
           />
         </Link>
-
-
+        {/* Text with gradient */}
+        <div className="relative">
+          <p className="font-medium text-lgt" style={{ color: "#1EA5D8" }}>
+            Byte And Board Solutions
+          </p>
+          {/* Fallback text in case gradient fails */}
+          <p className="absolute top-0 left-0 text-gray-800 sm:hidden" style={{ color: "#1EA5D8" }}>
+            Byte And Board Solutions
+          </p>
+        </div>
+        </div>
             <div className="max-w-[475px] w-full">
               <form>
                 <div className="flex items-center">
@@ -115,7 +124,7 @@ const Header = () => {
                 </div>
               </form>
             </div>
-          </div>
+          
 
           {/* <!-- header top right --> */}
           <div className="flex w-full lg:w-auto items-center gap-7.5">
