@@ -3,8 +3,8 @@ import Cart from "@/components/Cart";
 import { Metadata } from "next";
 
 export const metadata = {
-    title: "Cart Page | NextCommerce Nextjs E-commerce",
-    description: "This is Cart Page for NextCommerce",
+    title: "Cart Page | Byte and Board Solutions",
+    description: "This is Cart Page for Byte and Board Solutions",
     // other metadata
 };
 

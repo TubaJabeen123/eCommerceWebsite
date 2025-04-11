@@ -3,8 +3,8 @@ import Signin from "@/components/Auth/Signin";
 import { Metadata } from "next";
 
 export const metadata = {
-    title: "Signin Page | NextCommerce Nextjs E-commerce template",
-    description: "This is Signin Page for NextCommerce Template",
+    title: "Signin Page | Byte and Board Solutions",
+    description: "This is Signin Page for Byte and Board Solutions",
     // other metadata
 };
 
