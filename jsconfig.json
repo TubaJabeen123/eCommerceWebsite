@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "allowJs": true
   },
-  "include": ["**/*.js", "**/*.jsx"],
+  "include": ["**/*.js", "**/*.jsx", "src/components/Admin/index.jsx"],
   "exclude": ["node_modules"]
 }

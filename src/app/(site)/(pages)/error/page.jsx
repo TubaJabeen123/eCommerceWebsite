@@ -1,6 +1,6 @@
 import React from "react";
 import Error from "@/components/Error";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 
 export const metadata = {
     title: "Error Page | NextCommerce Nextjs E-commerce template",
