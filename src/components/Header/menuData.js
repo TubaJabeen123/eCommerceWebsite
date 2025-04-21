@@ -25,18 +25,6 @@ export const menuData= [
     path: "/",
     submenu: [
       {
-        id: 61,
-        title: "Shop With Sidebar",
-        newTab: false,
-        path: "/shop-with-sidebar",
-      },
-      {
-        id: 62,
-        title: "Shop Without Sidebar",
-        newTab: false,
-        path: "/shop-without-sidebar",
-      },
-      {
         id: 64,
         title: "Checkout",
         newTab: false,

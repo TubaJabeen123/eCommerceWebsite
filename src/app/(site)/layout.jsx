@@ -22,6 +22,12 @@ export default function RootLayout({ children }) {
 
     return (
         <html lang="en" suppressHydrationWarning={true}>
+          <head>
+    <link rel="icon" type="image/png" href="/images/logo/Logo.png" />
+    <link rel="shortcut icon" type="image/png" href="/images/logo/Logo.png" />
+    <title>Byte & Board Solutions</title>
+</head>
+
             <body>
                 {loading ? (
                     <PreLoader />

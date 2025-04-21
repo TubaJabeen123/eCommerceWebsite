@@ -1,6 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { auth, db, storage } from '../../lib/firebaseConfig';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
-const AddressModal = ({ isOpen, closeModal }) => {
+const AddressModal = ({ isOpen, closeModal
+  , onAddressChange
+ }) => {
+  const [userData, setUserData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+          if (currentUser) {
+            try {
+              const userDocRef = doc(db, 'users', currentUser.uid);
+              const userDoc = await getDoc(userDocRef);
+
+              if (userDoc.exists()) {
+                setUserData(userDoc.data());
+                console.log('User data: ', userDoc.data());
+              } else {
+                console.error('User document not found');
+              }
+            } catch (err) {
+              console.error('Error fetching user data: ', err);
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            console.error('No authenticated user found');
+            setLoading(false);
+          }
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error('Error initializing Firebase Auth Listener:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+
   useEffect(() => {
     // closing modal while clicking outside
     function handleClickOutside(event) {
@@ -18,11 +62,29 @@ const AddressModal = ({ isOpen, closeModal }) => {
     };
   }, [isOpen, closeModal]);
 
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+
+  async function updateAddress() {
+    // (phone, address);
+    console.log(phone, address);
+    try {
+      const userDocRef = doc(db, 'users', auth.currentUser.uid);
+      await updateDoc(userDocRef, {
+        phone: phone,
+        address: address
+      });
+      onAddressChange(phone, address);
+      closeModal();
+    } catch (error) {
+      console.error("Error updating address: ", error);
+    }
+  }
+
   return (
     <div
-      className={`fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-dark/70 sm:px-8 px-4 py-5 ${
-        isOpen ? "block z-99999" : "hidden"
-      }`}
+      className={`fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-blue-dark/70 sm:px-8 px-4 py-5 ${isOpen ? "block z-99999" : "hidden"
+        }`}
     >
       <div className="flex items-center justify-center ">
         <div
@@ -52,32 +114,9 @@ const AddressModal = ({ isOpen, closeModal }) => {
           </button>
 
           <div>
-            <form>
+            <div>
               <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                 <div className="w-full">
-                  <label htmlFor="name" className="block mb-2.5">
-                    Name
-                  </label>
-
-                  <input
-                    type="text"
-                    name="name"
-                    value="James Septimus"
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-                  />
-                </div>
-
-                <div className="w-full">
-                  <label htmlFor="email" className="block mb-2.5">
-                    Email
-                  </label>
-
-                  <input
-                    type="email"
-                    name="email"
-                    value="jamse@example.com"
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-                  />
                 </div>
               </div>
 
@@ -90,7 +129,9 @@ const AddressModal = ({ isOpen, closeModal }) => {
                   <input
                     type="text"
                     name="phone"
-                    value="1234 567890"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Enter phone number"
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
@@ -103,19 +144,21 @@ const AddressModal = ({ isOpen, closeModal }) => {
                   <input
                     type="text"
                     name="address"
-                    value="7398 Smoke Ranch RoadLas Vegas, Nevada 89128"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Enter address"
                     className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+              <div
+                onClick={updateAddress}
+                className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark cursor-pointer"
               >
                 Save Changes
-              </button>
-            </form>
+              </div>
+            </div>
           </div>
         </div>
       </div>

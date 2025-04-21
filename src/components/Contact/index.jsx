@@ -33,7 +33,7 @@ const Contact = () => {
                         fill="#3C50E0"
                       />
                     </svg>
-                    Name: James Septimus
+                    Name: Byte and Board Solutions
                   </p>
 
                   <p className="flex items-center gap-4">
