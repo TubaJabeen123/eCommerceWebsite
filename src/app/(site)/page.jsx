@@ -1,4 +1,3 @@
-
 import Home from "@/components/Home";
 // import { Metadata } from "next";
 
