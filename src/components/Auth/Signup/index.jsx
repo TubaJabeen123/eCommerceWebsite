@@ -46,7 +46,7 @@ const Signup = () => {
         router.push('/my-account');
       } catch (error) {
         console.error('GitHub Sign-in error:', error);
-        alert('GitHub sign-in failed. Please try again.');
+        alert('GitHub sign-in failed. Please try again or check console.');
       }
     };
     

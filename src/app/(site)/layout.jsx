@@ -12,6 +12,7 @@ import CartSidebarModal from "@/components/Common/CartSidebarModal";
 import { PreviewSliderProvider } from "../context/PreviewSliderContext";
 import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
+import CartInitializer from "@/redux/features/cartInitializer";
 import PreLoader from "@/components/Common/PreLoader";
 
 export default function RootLayout({ children }) {
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
                                 <ModalProvider>
                                     <PreviewSliderProvider>
                                         <Header />
+                                        <CartInitializer />
                                         {children}
                                         <QuickViewModal />
                                         <CartSidebarModal />
