@@ -1,24 +1,15 @@
-import Admin from "@/components/Admin"
-import AdminDashboard from "@/components/Admin/admin-dashboard";
-
 import React from "react";
-// import { Metadata } from "next";
+import AdminDashboard from "./adminDashboard/page";
 
+// Inline export of metadata
 export const metadata = {
-    title: "Admin Dashboard | Byte and Board Solutions",
-    description: "This is My Account page for Admin",
+    title: "Admin Home | Byte and Board Solutions",
+    description: "This is Admin Home Page for Byte and Board Solutions",
     // other metadata
 };
 
-const AdminPage= ()=>{
+export default function AdminHome() {
     return (
-    <main>
-        <Admin/>
-        <AdminDashboard/>
-
-    </main>
+        <AdminDashboard /> 
     );
 }
-
-export default AdminPage;
-
