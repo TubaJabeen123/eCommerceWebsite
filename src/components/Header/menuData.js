@@ -19,6 +19,12 @@ export const menuData= [
     path: "/contact",
   },
   {
+    id: 4,
+    title: "Add Product",
+    newTab: false,
+    path: "/add",
+  },
+  {
     id: 6,
     title: "pages",
     newTab: false,

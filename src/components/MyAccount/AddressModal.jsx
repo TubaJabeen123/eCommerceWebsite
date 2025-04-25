@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { auth, db, storage } from '../../lib/firebaseConfig';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../lib/firebaseConfig';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
-const AddressModal = ({ isOpen, closeModal
-  , onAddressChange
- }) => {
-  const [userData, setUserData] = useState(null)
-  const [loading, setLoading] = useState(true)
+const AddressModal = ({ isOpen, closeModal, onAddressChange }) => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
 
+  // Fetch user data and initialize form fields
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -18,10 +19,14 @@ const AddressModal = ({ isOpen, closeModal
               const userDoc = await getDoc(userDocRef);
 
               if (userDoc.exists()) {
-                setUserData(userDoc.data());
-                console.log('User data: ', userDoc.data());
+                const data = userDoc.data();
+                setUserData(data);
+                setPhone(data.phone || '');
+                setAddress(data.address || '');
               } else {
-                console.error('User document not found');
+                console.log('No existing user document found');
+                setPhone('');
+                setAddress('');
               }
             } catch (err) {
               console.error('Error fetching user data: ', err);
@@ -29,7 +34,6 @@ const AddressModal = ({ isOpen, closeModal
               setLoading(false);
             }
           } else {
-            console.error('No authenticated user found');
             setLoading(false);
           }
         });
@@ -44,9 +48,8 @@ const AddressModal = ({ isOpen, closeModal
     fetchUserData();
   }, []);
 
-
+  // Close modal when clicking outside
   useEffect(() => {
-    // closing modal while clicking outside
     function handleClickOutside(event) {
       if (!event.target.closest(".modal-content")) {
         closeModal();
@@ -62,23 +65,40 @@ const AddressModal = ({ isOpen, closeModal
     };
   }, [isOpen, closeModal]);
 
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  // Handle address update
+  const updateAddress = async () => {
+    if (!auth.currentUser) {
+      console.error('No authenticated user');
+      return;
+    }
 
-  async function updateAddress() {
-    // (phone, address);
-    console.log(phone, address);
     try {
       const userDocRef = doc(db, 'users', auth.currentUser.uid);
-      await updateDoc(userDocRef, {
-        phone: phone,
-        address: address
-      });
+      await setDoc(
+        userDocRef,
+        {
+          phone: phone.trim(),
+          address: address.trim(),
+          updatedAt: new Date().toISOString()
+        },
+        { merge: true }
+      );
+      
       onAddressChange(phone, address);
       closeModal();
     } catch (error) {
       console.error("Error updating address: ", error);
     }
+  };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-blue-dark/70">
+        <div className="bg-white p-8 rounded-lg">
+          <p>Loading user data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,11 +106,8 @@ const AddressModal = ({ isOpen, closeModal
       className={`fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-blue-dark/70 sm:px-8 px-4 py-5 ${isOpen ? "block z-99999" : "hidden"
         }`}
     >
-      <div className="flex items-center justify-center ">
-        <div
-          x-show="addressModal"
-          className="w-full max-w-[1100px] rounded-xl shadow-3 bg-white p-7.5 relative modal-content"
-        >
+      <div className="flex items-center justify-center">
+        <div className="w-full max-w-[1100px] rounded-xl shadow-3 bg-white p-7.5 relative modal-content">
           <button
             onClick={closeModal}
             aria-label="button for close modal"
@@ -114,50 +131,51 @@ const AddressModal = ({ isOpen, closeModal
           </button>
 
           <div>
-            <div>
-              <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
-                <div className="w-full">
-                </div>
+            <h2 className="text-2xl font-bold mb-6">Update Contact Information</h2>
+            
+            <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
+              <div className="w-full">
+                <label htmlFor="phone" className="block mb-2.5">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter phone number"
+                  className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                />
               </div>
 
-              <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
-                <div className="w-full">
-                  <label htmlFor="phone" className="block mb-2.5">
-                    Phone
-                  </label>
-
-                  <input
-                    type="text"
-                    name="phone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Enter phone number"
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-                  />
-                </div>
-
-                <div className="w-full">
-                  <label htmlFor="address" className="block mb-2.5">
-                    Address
-                  </label>
-
-                  <input
-                    type="text"
-                    name="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Enter address"
-                    className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-                  />
-                </div>
+              <div className="w-full">
+                <label htmlFor="address" className="block mb-2.5">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Enter full address"
+                  className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                />
               </div>
+            </div>
 
-              <div
+            <div className="flex justify-end gap-4 mt-8">
+              <button
+                onClick={closeModal}
+                className="font-medium text-gray-700 bg-gray-200 py-3 px-7 rounded-md ease-out duration-200 hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
                 onClick={updateAddress}
-                className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark cursor-pointer"
+                className="font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
               >
                 Save Changes
-              </div>
+              </button>
             </div>
           </div>
         </div>

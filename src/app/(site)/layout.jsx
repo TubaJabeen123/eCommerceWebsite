@@ -12,6 +12,7 @@ import CartSidebarModal from "@/components/Common/CartSidebarModal";
 import { PreviewSliderProvider } from "../context/PreviewSliderContext";
 import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
+import CartInitializer from "@/redux/features/cartInitializer";
 import PreLoader from "@/components/Common/PreLoader";
 
 export default function RootLayout({ children }) {
@@ -22,11 +23,11 @@ export default function RootLayout({ children }) {
 
     return (
         <html lang="en" suppressHydrationWarning={true}>
-          <head>
-    <link rel="icon" type="image/png" href="/images/logo/Logo.png" />
-    <link rel="shortcut icon" type="image/png" href="/images/logo/Logo.png" />
-    <title>Byte & Board Solutions</title>
-</head>
+            <head>
+                <link rel="icon" type="image/png" href="/images/logo/Logo.png" />
+                <link rel="shortcut icon" type="image/png" href="/images/logo/Logo.png" />
+                <title>Byte & Board Solutions</title>
+            </head>
 
             <body>
                 {loading ? (
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
                                 <ModalProvider>
                                     <PreviewSliderProvider>
                                         <Header />
+                                        <CartInitializer />
                                         {children}
                                         <QuickViewModal />
                                         <CartSidebarModal />

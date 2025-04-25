@@ -1,14 +1,18 @@
 "use client";
 import React from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import Login from "./Login";
-import Shipping from "./Shipping";
+import Login from "./Login"; 
 import ShippingMethod from "./ShippingMethod";
-import PaymentMethod from "./PaymentMethod";
-import Coupon from "./Coupon";
+import PaymentMethod from "./PaymentMethod"; 
 import Billing from "./Billing";
+import { useAppSelector } from "@/redux/store";
+import { selectTotalPrice } from "@/redux/features/cart-slice";
 
 const Checkout = () => {
+  const cartItems = useAppSelector((state) => state.cartReducer.items);
+  const totalPrice = useAppSelector(selectTotalPrice);
+  const shippingFee = 15.00; // You can make this dynamic if needed
+
   return (
     <>
       <Breadcrumb title={"Checkout"} pages={["checkout"]} />
@@ -23,8 +27,7 @@ const Checkout = () => {
 
                 {/* <!-- billing details --> */}
                 <Billing />
-                {/* <!-- address box two --> */}
-                <Shipping /> 
+                {/* <!-- address box two --> */} 
                 {/* <!-- others note box --> */}
                 <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5 mt-7.5">
                   <div>
@@ -36,7 +39,7 @@ const Checkout = () => {
                       name="notes"
                       id="notes"
                       rows={5}
-                      placeholder="Notes about your order, e.g. speacial notes for delivery."
+                      placeholder="Notes about your order, e.g. special notes for delivery."
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     ></textarea>
                   </div>
@@ -66,45 +69,29 @@ const Checkout = () => {
                       </div>
                     </div>
 
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">iPhone 14 Plus , 6/128GB</p>
+                    {/* <!-- product name --> */}
+                    {cartItems.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between py-5 border-b border-gray-3">
+                        <div>
+                          <p className="text-dark">
+                            {item?.title} 
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-dark text-right">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-dark text-right">$899.00</p>
-                      </div>
-                    </div>
+                    ))}
 
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-
-                      <div>
-                        <p className="text-dark">Asus RT Dual Band Router</p>
-                      </div>
-                      <div>
-                        <p className="text-dark text-right">$129.00</p>
-                      </div>
-                    </div>
-
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">Havit HV-G69 USB Gamepad</p>
-                      </div>
-                      <div>
-                        <p className="text-dark text-right">$29.00</p>
-                      </div>
-                    </div>
-
-
-                    {/* <!-- product item --> */}
+                    {/* <!-- shipping fee --> */}
                     <div className="flex items-center justify-between py-5 border-b border-gray-3">
                       <div>
                         <p className="text-dark">Shipping Fee</p>
                       </div>
                       <div>
-                        <p className="text-dark text-right">$15.00</p>
+                        <p className="text-dark text-right">${totalPrice > shippingFee ? shippingFee.toFixed(2) : 0}</p>
                       </div>
                     </div>
 
@@ -115,21 +102,13 @@ const Checkout = () => {
                       </div>
                       <div>
                         <p className="font-medium text-lg text-dark text-right">
-                          $1072.00
-
+                          ${(totalPrice > shippingFee ? totalPrice + shippingFee : 0).toFixed(2)}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {/* <!-- coupon box --> */}
-                <Coupon />
-
-                {/* <!-- shipping box --> */}
-                <ShippingMethod />
-
-
+ 
                 {/* <!-- payment box --> */}
                 <PaymentMethod />
 
