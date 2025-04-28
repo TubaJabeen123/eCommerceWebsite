@@ -2,21 +2,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 
-
 const AdminProductItem = ({ item, onEditClick, onDeleteClick }) => {
 
+    
     const handleEdit = (e) => {
-        e.preventDefault(); // Prevent link navigation if buttons are inside link
+        e.preventDefault();
         e.stopPropagation();
-        onEditClick(item);
+        onEditClick(item); // Pass the entire item
     };
 
     const handleDelete = (e) => {
-        e.preventDefault(); // Prevent link navigation if buttons are inside link
+        e.preventDefault();
         e.stopPropagation();
-        if (window.confirm(`Are you sure you want to delete "${item.title}"?`)) {
-            onDeleteClick(item.id);
-        }
+        onDeleteClick(item.id); // Pass only the ID
     };
 
     return (
@@ -25,7 +23,7 @@ const AdminProductItem = ({ item, onEditClick, onDeleteClick }) => {
                 {/* Use Link for navigation to product details page if needed, but make sure buttons are accessible */}
                 <Link href={`#`} onClick={(e) => e.preventDefault()} className="block w-full h-full">
                     <Image
-                        src={item.imgs?.previews?.[0] || '/images/placeholder.png'} // Added fallback
+                        src={item?.image || '/images/placeholder.png'} // Added fallback
                         alt={item.title}
                         width={200}
                         height={200}
@@ -35,16 +33,19 @@ const AdminProductItem = ({ item, onEditClick, onDeleteClick }) => {
                 {/* Edit/Delete Buttons - positioned absolutely */}
                 <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
-                        onClick={handleEdit}
-                        aria-label="Edit product"
-                        className="flex items-center justify-center w-8 h-8 rounded-full shadow-md ease-out duration-200 text-blue bg-white hover:bg-blue-dark"
-                        title="Edit Product"
+                        onClick={() => {
+                            // openModal();
+                            // handleQuickViewUpdate();
+                        }}
+                        id="newOne"
+                        aria-label="button for quick view"
+                        className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-blue"
                     >
-                        {/* Edit Icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                         </svg>
                     </button>
+
                     <button
                         onClick={handleDelete}
                         aria-label="Delete product"
@@ -57,7 +58,7 @@ const AdminProductItem = ({ item, onEditClick, onDeleteClick }) => {
                         </svg>
                     </button>
                 </div>
-            </div>
+            </div >
 
             <div className="p-4 flex flex-col flex-grow">
                 {/* Star Rating (Example) */}
@@ -94,7 +95,7 @@ const AdminProductItem = ({ item, onEditClick, onDeleteClick }) => {
                     </span>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
