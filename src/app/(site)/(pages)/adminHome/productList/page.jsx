@@ -1,29 +1,86 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminProductItem from '@/components/Admin/AdminProductItem';
-import shopData from '@/components/Shop/shopData';
+import { db } from '../../../../../lib/firebaseConfig';
+import { collection, getDocs, getDoc, query, orderBy, deleteDoc, getDocFromServer, doc, updateDoc } from 'firebase/firestore';
+import PreLoader from '@/components/Common/PreLoader'; 
 
-const ProductList = ({onEdit, onDelete }) => {
+const ProductList = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [products , setProducts] = useState(shopData); 
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [categoryFilter, setCategoryFilter] = useState("All Categories");
     const [sortBy, setSortBy] = useState("Last added");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8; // Adjust as needed
+    const itemsPerPage = 8;
 
-    // --- Filtering and Sorting Logic ---
+    
+    const handleDelete = async (productId) => { 
+              
+        const productRef = doc(db, 'products', productId); 
+      
+        // Verify document existence from SERVER (not cache)
+        const serverSnap = await getDocFromServer(productRef); 
+      
+        if (!serverSnap.exists()) {
+          // Check local state mismatch
+          const localExists = products.some(p => p.id === productId); 
+          
+          if (localExists) {
+            alert("Data mismatch! Document exists locally but not in Firestore.");
+            await fetchProducts(); // Refresh data
+          }
+          return;
+        }
+      
+        // Proceed with deletion if exists
+        await deleteDoc(productRef);
+        setProducts(prev => prev.filter(p => p.id !== productId));
+      };
+
+    // Proper edit implementation
+    const handleEdit = (product) => {
+        setEditingProduct(product);
+    };
+
+    const fetchProducts = async () => {
+        console.log("Fetching products...");
+        try {
+            const productsRef = collection(db, 'products');
+            const q = query(productsRef, orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+            const productsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                title: doc.data().product_name,
+                description: doc.data().product_description,
+                category: doc.data().product_category,
+                price: doc.data().product_price,
+                image: doc.data().image,
+                createdAt: doc.data().createdAt,
+                ...doc.data()
+            }));
+            setProducts(productsData); 
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
     const filteredProducts = products
         .filter(product =>
-            product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
         )
         .filter(product =>
             categoryFilter === "All Categories" || product.category === categoryFilter
         );
-    // Add sorting logic here based on `sortBy` state if needed
 
-    // --- Pagination Logic ---
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
@@ -34,37 +91,27 @@ const ProductList = ({onEdit, onDelete }) => {
     };
 
     const getUniqueCategories = () => {
-        const categories = new Set(products.map(p => p.category).filter(Boolean)); // Filter out undefined/null
+        const categories = new Set(products.map(p => p.category).filter(Boolean));
         return ["All Categories", ...Array.from(categories)];
     };
-    const uniqueCategories = getUniqueCategories();
 
+    const uniqueCategories = getUniqueCategories();
 
     return (
         <div className="space-y-2">
             <div className="flex flex-wrap justify-between items-center gap-2 mb-6 pt-20 px-6 md:px-8 pb-1 md:pb-8 top-[88px]">
                 <h1 className="text-2xl font-semibold text-gray-7">Product List</h1>
-                {/* Add buttons can go here or in the AddProduct component */}
-                {/* <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 12H18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 18V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    Add New Product
-                </button> */}
             </div>
 
-            {/* Filter and Search Bar */}
             <div className="bg-white rounded-lg shadow-sm p-4">
                 <div className="flex flex-wrap gap-4 justify-between items-center">
-                    {/* Search Input */}
                     <div className="relative flex-grow max-w-sm">
                         <input
                             type="text"
                             placeholder="Search products..."
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             value={searchQuery}
-                            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }} // Reset page on search
+                            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         />
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-4">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,11 +121,10 @@ const ProductList = ({onEdit, onDelete }) => {
                         </div>
                     </div>
 
-                    {/* Filter Dropdowns */}
                     <div className="flex gap-4 flex-wrap">
                         <select
                             value={categoryFilter}
-                            onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }} // Reset page on filter change
+                            onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
                             className="px-4 py-2 border border-gray-5 rounded-md text-gray-7 hover:bg-gray-4 focus:outline-none focus:ring-2 focus:ring-blue-dark"
                         >
                             {uniqueCategories.map(cat => (
@@ -95,32 +141,36 @@ const ProductList = ({onEdit, onDelete }) => {
                             <option value="Price: Low to High">Price: Low to High</option>
                             <option value="Price: High to Low">Price: High to Low</option>
                             <option value="Name: A-Z">Name: A-Z</option>
-                            {/* Add more sort options */}
                         </select>
                     </div>
                 </div>
             </div>
 
-            {/* Product Grid */}
-            {currentProducts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {currentProducts.map((item) => (
-                        <AdminProductItem
-                            item={item}
-                            key={item.id}
-                            onEditClick={onEdit}
-                            onDeleteClick={onDelete}
-                        />
-                    ))}
-                </div>
-            ) : (
-                <div className="text-center py-10 text-gray">
-                    No products found matching your criteria.
-                </div>
-            )}
+            <div className="relative">
+                {loading ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50">
+                        <PreLoader />
+                    </div>
+                ) : null}
 
+                {currentProducts.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {currentProducts.map((item) => (
+                            <AdminProductItem
+                                item={item}
+                                key={item.id}
+                                onEditClick={handleEdit}
+                                onDeleteClick={handleDelete}  // Ensure this is passed correctly
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-10 text-gray">
+                        No products found matching your criteria.
+                    </div>
+                )}
+            </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-2 p-4 mt-6">
                     <button
@@ -131,13 +181,12 @@ const ProductList = ({onEdit, onDelete }) => {
                         « Prev
                     </button>
 
-                    {/* Generate page numbers (simplified example) */}
                     {[...Array(totalPages).keys()].map(number => (
                         <button
                             key={number + 1}
                             className={`flex items-center justify-center w-8 h-8 rounded-md border ${currentPage === number + 1
-                                    ? 'bg-blue-dark text-white border-blue-dark'
-                                    : 'border-gray text-gray hover:bg-gray'
+                                ? 'bg-blue-dark text-white border-blue-dark'
+                                : 'border-gray text-gray hover:bg-gray'
                                 }`}
                             onClick={() => handlePageChange(number + 1)}
                         >
@@ -145,9 +194,8 @@ const ProductList = ({onEdit, onDelete }) => {
                         </button>
                     ))}
 
-
                     <button
-                        className="px-3 py-1 border border-gray rounded-md text-gray0 hover:bg-gray disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 border border-gray rounded-md text-gray hover:bg-gray disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={currentPage === totalPages}
                         onClick={() => handlePageChange(currentPage + 1)}
                     >

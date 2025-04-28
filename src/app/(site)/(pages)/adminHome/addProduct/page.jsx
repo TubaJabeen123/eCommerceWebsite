@@ -78,23 +78,25 @@ function AddProductForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+    
         try {
             if (!auth.currentUser) {
                 alert("Please sign in first!");
                 return;
             }
-
-            const productRef = doc(collection(db, 'products'));
+    
+            const id = uuidv4(); // 🆕 create your own id
+            const productRef = doc(db, 'products', id); // 🆕 use it as Firestore document id
+    
             const productData = {
-                id: uuidv4(),
+                id, // 🆕 also save the id inside the data
                 product_name: name,
                 product_description: description,
                 product_price: parseFloat(price),
                 product_category: category,
                 createdAt: serverTimestamp(),
             };
-
+    
             if (image) {
                 const reader = new FileReader();
                 const base64Image = await new Promise((resolve) => {
@@ -103,10 +105,10 @@ function AddProductForm() {
                 });
                 productData.image = base64Image;
             }
-
+    
             await setDoc(productRef, productData);
             alert("Product added successfully!");
-            router.push("/shop-with-sidebar");
+            router.push("/adminHome/productList");
         } catch (error) {
             console.error("Error adding product:", error);
             alert(`Error adding product: ${error.message}`);
@@ -114,6 +116,7 @@ function AddProductForm() {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="bg-white p-6 md:p-8 rounded-lg shadow">
