@@ -91,7 +91,6 @@ export default function Add() {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Product description"
-                            rows="4"
                             className="w-full px-3 py-2 border rounded-md resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -137,26 +136,18 @@ export default function Add() {
                             className="w-full cursor-pointer"
                         />
                     </div>
-                </form>
-                <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
                     <button
                         type="button"
                         onClick={() => router.push("/products")}
-                        className="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                        className="w-full sm:w-auto px-4 py-2 bg-blue hover:bg-blue-dark rounded-md transition-colors"
                     >
-                        Cancel
+                        Submit
                     </button>
-                    <button
-                        type="submit"
-                        form="add-product-form"
-                        disabled={loading}
-                        className={`w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    >
-                        <span className="text-white transition-opacity duration-200">
-                            {loading ? "Creating..." : "Create"}
-                        </span>
-                    </button>
-                </div>
+                </form>
+           
+
+
+                                
             </div>
         </div>
     )

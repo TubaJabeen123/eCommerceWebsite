@@ -14,10 +14,12 @@ const ProductList = () => {
     const [sortBy, setSortBy] = useState("Last added");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
-
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     
+
     const handleDelete = async (productId) => { 
-              
+                  
         const productRef = doc(db, 'products', productId); 
       
         // Verify document existence from SERVER (not cache)
@@ -39,10 +41,49 @@ const ProductList = () => {
         setProducts(prev => prev.filter(p => p.id !== productId));
       };
 
-    // Proper edit implementation
-    const handleEdit = (product) => {
-        setEditingProduct(product);
-    };
+
+// Adjusted handleEdit function
+const handleEdit = (item) => {
+    setSelectedItem(item);      // Set the item to be edited
+    setIsEditModalOpen(true);   // Open the modal
+};
+
+const handleSaveEdit = async (updatedItem) => {
+    try {
+        const productRef = doc(db, 'products', updatedItem.id);
+        
+        // Prepare update data
+        const updateData = {
+            product_name: updatedItem.product_name,
+            product_description: updatedItem.product_description,
+            product_price: parseFloat(updatedItem.product_price),
+            product_category: updatedItem.product_category,
+            stock: parseInt(updatedItem.stock) || 0,
+        };
+
+        // Handle image update if a new file was selected
+        if (updatedItem.image instanceof File) {
+            const reader = new FileReader();
+            const base64Image = await new Promise((resolve) => {
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(updatedItem.image);
+            });
+            updateData.image = base64Image;
+        } else if (typeof updatedItem.image === 'string') {
+            updateData.image = updatedItem.image;
+        }
+
+        await updateDoc(productRef, updateData);
+
+        // Update local state
+        setProducts(prev => prev.map(p => 
+            p.id === updatedItem.id ? { ...p, ...updateData } : p
+        ));
+    } catch (error) {
+        console.error('Error updating product:', error);
+    }
+};
+
 
     const fetchProducts = async () => {
         console.log("Fetching products...");
@@ -156,12 +197,18 @@ const ProductList = () => {
                 {currentProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {currentProducts.map((item) => (
-                            <AdminProductItem
-                                item={item}
-                                key={item.id}
-                                onEditClick={handleEdit}
-                                onDeleteClick={handleDelete}  // Ensure this is passed correctly
-                            />
+                        
+<AdminProductItem
+  item={item}
+  key={item.id}
+  onEditClick={handleEdit}
+  onDeleteClick={handleDelete}
+  onSave={handleSaveEdit} // ✅ correct now
+  isEditModalOpen={isEditModalOpen}
+  closeModal={() => setIsEditModalOpen(false)}
+  selectedItem={selectedItem}
+/>
+
                         ))}
                     </div>
                 ) : (
